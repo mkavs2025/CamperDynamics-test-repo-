@@ -2,6 +2,13 @@ import {INTERIOR_FEATURES,INTERIOR_OPTIONS,INTERIOR_THEMES,interiorEnabled} from
 export const interiorOpen=new Set(['Sleeping']);
 const labels={wood:'Cabinetry & timber',upholstery:'Upholstery',walls:'Wall panels',ceiling:'Ceiling',floor:'Flooring',counter:'Worktop',curtains:'Curtain fabric',accent:'Accent colour',linen:'Pillows & linen',trim:'Trim & handles',metal:'Metal fittings'};
 export function interiorPanel(state,catalog,money){const i=state.interior,sections=[...new Set(INTERIOR_FEATURES.map(f=>f.section))];return `
+ <div class="interior-photo-banner">
+  <div class="banner-text">
+   <strong>📷 360° Real Camper Interior</strong>
+   <small>Explore the realistic 360° cabin interior or tap customize to tailor materials & layout.</small>
+  </div>
+  <button id="panelCustomizeToggle" class="panel-customize-btn">✨ Tap to customize</button>
+ </div>
  <p class="panel-description">Choose a theme, then tailor every item. Changes update the cabin and cutaway.</p>
  <div class="interior-themes">${Object.entries(INTERIOR_THEMES).map(([id,t])=>`<button data-interior-theme="${id}" aria-pressed="${i.theme===id}" aria-label="${t.name} interior theme"><span class="theme-dots">${['wood','upholstery','walls','accent'].map(r=>`<i style="background:${t.colors[r]}"></i>`).join('')}</span><strong>${t.name}</strong></button>`).join('')}</div>
  <div class="interior-styles">${Object.entries(INTERIOR_OPTIONS.styles).map(([id,values])=>`<label>${{bedStyle:'Bed arrangement',tableShape:'Table shape',curtainStyle:'Curtains',cabinetStyle:'Overhead storage'}[id]}<select data-interior-style="${id}" aria-label="${{bedStyle:'Bed arrangement',tableShape:'Table shape',curtainStyle:'Curtains position',cabinetStyle:'Overhead storage style'}[id]}">${values.map(v=>`<option value="${v}" ${i[id]===v?'selected':''}>${{double:'Double platform',twin:'Twin platforms',rectangular:'Rectangular',round:'Round',open:'Open',closed:'Closed',doors:'Cupboard doors',shelves:'Open shelves'}[v]}</option>`).join('')}</select></label>`).join('')}</div>

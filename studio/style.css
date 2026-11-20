@@ -174,3 +174,99 @@ body #trailReward #rewardReturn{margin-top:15px}
  .build-sidebar .final-price{position:sticky;bottom:0;padding:12px 18px;min-height:52px}
  .build-sidebar .final-price #total{font-size:22px}
 }
+
+/* Interior 360 Photo & Customizer Toggle */
+.interior-customize-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 38;
+  background: linear-gradient(135deg, rgba(22, 34, 30, 0.94), rgba(14, 20, 18, 0.94));
+  border: 1.5px solid #dfc282;
+  border-radius: 30px;
+  padding: 12px 22px;
+  color: #fff6e0;
+  font-family: 'DM Sans', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(223, 194, 130, 0.25);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+.interior-customize-btn:hover {
+  background: linear-gradient(135deg, rgba(34, 52, 45, 0.98), rgba(20, 30, 26, 0.98));
+  border-color: #ffe099;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(223, 194, 130, 0.45);
+  transform: translateY(-50%) scale(1.05);
+}
+.interior-customize-btn:active {
+  transform: translateY(-50%) scale(0.98);
+}
+.interior-customize-btn .btn-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+.interior-customize-btn.customizing-active {
+  background: linear-gradient(135deg, rgba(45, 36, 22, 0.94), rgba(28, 20, 12, 0.94));
+  border-color: #ffd175;
+}
+
+@media (max-width: 700px) {
+  .interior-customize-btn {
+    right: 14px;
+    top: 58px;
+    transform: none;
+    padding: 9px 16px;
+    font-size: 11px;
+  }
+  .interior-customize-btn:hover {
+    transform: scale(1.03);
+  }
+}
+
+.interior-photo-banner {
+  background: linear-gradient(135deg, rgba(35, 48, 43, 0.75), rgba(20, 28, 25, 0.85));
+  border: 1px solid #4a5c53;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.interior-photo-banner .banner-text strong {
+  display: block;
+  font-size: 12px;
+  color: #dfc282;
+  margin-bottom: 3px;
+}
+.interior-photo-banner .banner-text small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #9cb1a6;
+}
+.panel-customize-btn {
+  background: #dfc282;
+  color: #1a2520;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  align-self: flex-start;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.panel-customize-btn:hover {
+  background: #f0d59a;
+  transform: scale(1.03);
+}
