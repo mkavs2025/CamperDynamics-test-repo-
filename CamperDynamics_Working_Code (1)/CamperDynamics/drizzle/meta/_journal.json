@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1794927931079,
+      "tag": "0000_watery_puck",
+      "breakpoints": true
+    }
+  ]
+}

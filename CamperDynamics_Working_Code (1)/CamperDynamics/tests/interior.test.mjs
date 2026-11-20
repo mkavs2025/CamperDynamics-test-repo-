@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {defaults,normalize,estimate} from '../studio/config.js';
+import {INTERIOR_FEATURES,INTERIOR_THEMES,normalizeInterior,interiorEnabled,applyInteriorTheme} from '../studio/interior-config.js';
+import {createInteriorKit} from '../studio/interior-kit.js';
+import {createVehicle} from '../studio/model.js';
+const catalog=JSON.parse(fs.readFileSync(new URL('../studio/catalog.json',import.meta.url)));
+const state=normalize(defaults,catalog),price=estimate(state,catalog).total;
+const cabin=createInteriorKit(),vehicle=createVehicle();assert.equal(INTERIOR_FEATURES.length,29);
+for(const id of Object.keys(INTERIOR_THEMES)){const themed={...state,interior:applyInteriorTheme(state.interior,id)};cabin.update(themed);vehicle.update(themed,catalog,{cutaway:true});assert.equal(cabin.materials['shell:walls'].color.getHexString(),themed.interior.finishes.walls.slice(1));assert.equal(vehicle.interiorKit.materials['shell:walls'].color.getHexString(),cabin.materials['shell:walls'].color.getHexString());assert.equal(estimate(themed,catalog).total,price);}
+for(const feature of INTERIOR_FEATURES){const s=normalize(state,catalog);s.interior.items[feature.id].enabled=false;cabin.update(s);vehicle.update(s,catalog,{cutaway:true});assert.equal(cabin.groups[feature.id].visible,false,feature.id+' must remove in 360');assert.equal(vehicle.interiorKit.groups[feature.id].visible,false,feature.id+' must remove in cutaway');assert.equal(estimate(s,catalog).total,price);s.interior.items[feature.id].enabled=true;s.interior.items[feature.id].color='#d01135';cabin.update(s);const m=cabin.materials[feature.id+':'+feature.role];assert.ok(m,feature.id+' must expose a material');assert.equal(m.color.getHexString(),'d01135');}
+const removed=normalize(state,catalog);removed.interior.items.bed.enabled=false;for(const id of ['mattress','blanket','bedPillows'])assert.equal(interiorEnabled(removed,id),false,'Bed dependents cannot float');
+const custom=normalize(state,catalog);custom.interior.bedStyle='twin';custom.interior.tableShape='round';custom.interior.curtainStyle='closed';custom.interior.cabinetStyle='shelves';custom.interior.finishes.floor='#987654';custom.interior.items.tap.color='#ff3311';assert.deepEqual(normalize(JSON.parse(JSON.stringify(custom)),catalog),custom,'Save/share round trip must preserve interior');assert.deepEqual(normalize(custom,catalog),custom,'Interior normalization must be idempotent');
+const invalid=normalizeInterior({theme:'<script>',finishes:{walls:'red',floor:'#ABCDEF',anything:'#123456'},items:{bed:{enabled:'false',color:'url(x)'},unknown:{enabled:true}},tableShape:'evil'});assert.equal(invalid.theme,'beige');assert.equal(invalid.items.bed.enabled,true);assert.equal(invalid.items.bed.color,null);assert.equal(invalid.finishes.floor,'#abcdef');assert.equal(invalid.tableShape,'rectangular');assert.equal(invalid.items.unknown,undefined);
+console.log('29 removals/re-additions and per-item colours, 4 themes, shared cutaway parity, price stability, parent dependencies and save/share normalization verified.');

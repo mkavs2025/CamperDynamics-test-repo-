@@ -1,0 +1,271 @@
+{
+  "version": "2026-11-demo-v3",
+  "currency": "INR",
+  "taxRate": 0.18,
+  "priceStatus": "Illustrative prices, not official quotations",
+  "vehicle": {
+    "id": "hilux",
+    "name": "Toyota Hilux",
+    "variant": "Double cab \u00b7 4\u00d74 reference",
+    "price": null
+  },
+  "models": [
+    {
+      "id": "basecamp",
+      "name": "Basecamp",
+      "type": "Flatbed pop-up camper",
+      "price": 680000,
+      "description": "An adventure base with a complete living space, water system and practical flatbed storage.",
+      "standard": [
+        "Insulated aluminium frame",
+        "170W roof-mounted solar panel",
+        "4 ceiling LED lights \u00b7 2 hatch fans",
+        "Queen bed and convertible seating",
+        "Kitchen cabinet, sink and drawers",
+        "80L fresh / 18L grey water system",
+        "Flatbed drawer and side storage",
+        "Swivel table \u00b7 storage cabinet",
+        "Screened entrance \u00b7 grab handle \u00b7 ladder choice",
+        "Fire extinguisher",
+        "Mounting & fixing included"
+      ],
+      "weight": "580kg+ \u00b7 configuration dependent"
+    },
+    {
+      "id": "backpack",
+      "name": "Backpack",
+      "type": "Topper pop-up camper",
+      "price": 420000,
+      "description": "A lightweight home above your pickup bed, with expandable sleeping space and a simpler footprint.",
+      "standard": [
+        "Insulated aluminium frame",
+        "170W roof-mounted solar panel",
+        "4 ceiling LED lights \u00b7 2 hatch fans",
+        "Mattress with slide-out extension",
+        "Bench cushions",
+        "Sliding / fixed windows \u00b7 layered soft walls",
+        "4 exterior mounting rails",
+        "Weatherproof power and solar inlet",
+        "Fire extinguisher",
+        "Mounting & fixing included"
+      ],
+      "weight": "250kg+ \u00b7 configuration dependent"
+    },
+    {
+      "id": "odyssey",
+      "name": "Odyssey",
+      "type": "Camper range",
+      "price": null,
+      "description": "Available by consultation. Approved specifications, vehicle fitment and pricing are needed before configuration.",
+      "standard": []
+    }
+  ],
+  "colors": [
+    {
+      "id": "grey",
+      "name": "Graphite Grey",
+      "hex": "#777d7e",
+      "price": 0
+    },
+    {
+      "id": "sand",
+      "name": "Expedition Sand",
+      "hex": "#c4aa7e",
+      "price": 18000
+    },
+    {
+      "id": "sage",
+      "name": "Woodland Green",
+      "hex": "#737e65",
+      "price": 18000
+    },
+    {
+      "id": "white",
+      "name": "Alpine White",
+      "hex": "#e4e2d8",
+      "price": 12000
+    },
+    {
+      "id": "midnight",
+      "name": "Midnight Black",
+      "hex": "#242c32",
+      "price": 18000
+    }
+  ],
+  "woods": [
+    {
+      "id": "beige",
+      "name": "Warm Beige",
+      "hex": "#bfa47d",
+      "price": 0
+    },
+    {
+      "id": "walnut",
+      "name": "Walnut concept",
+      "hex": "#765442",
+      "price": 18000
+    }
+  ],
+  "fabrics": [
+    {
+      "id": "linen",
+      "name": "Linen",
+      "hex": "#c5bba4",
+      "price": 0
+    },
+    {
+      "id": "charcoal",
+      "name": "Charcoal",
+      "hex": "#444948",
+      "price": 12000
+    }
+  ],
+  "addons": [
+    {
+      "id": "annex",
+      "name": "Awning + annex room",
+      "short": "Annex Awning",
+      "category": "exterior",
+      "price": 85000,
+      "models": [
+        "backpack"
+      ],
+      "icon": "annex",
+      "description": "Covered outdoor space with an attachable room for extra shelter or sleeping."
+    },
+    {
+      "id": "awning",
+      "name": "Recoil awning with lights",
+      "short": "Recoil Awning",
+      "category": "exterior",
+      "price": 65000,
+      "models": [
+        "basecamp"
+      ],
+      "icon": "awning",
+      "description": "Deployable shade with integrated lighting for evenings outside."
+    },
+    {
+      "id": "showerAwning",
+      "name": "Shower awning",
+      "short": "Shower Awning",
+      "category": "exterior",
+      "price": 18000,
+      "models": [
+        "backpack",
+        "basecamp"
+      ],
+      "icon": "shower",
+      "description": "A camper-mounted privacy enclosure for outdoor showering."
+    },
+    {
+      "id": "extraSolar",
+      "name": "Additional solar panel",
+      "short": "Extra Solar Panel",
+      "category": "exterior",
+      "price": 35000,
+      "models": [
+        "backpack",
+        "basecamp"
+      ],
+      "icon": "solar",
+      "description": "An additional illustrative 170W panel. The first 170W panel is already included."
+    },
+    {
+      "id": "outdoorLights",
+      "name": "Extra outdoor lighting",
+      "short": "Outdoor Lighting",
+      "category": "exterior",
+      "price": 12000,
+      "models": [
+        "backpack",
+        "basecamp"
+      ],
+      "icon": "lights",
+      "description": "Supplementary exterior lights for your surroundings at camp."
+    },
+    {
+      "id": "molle",
+      "name": "Rear MOLLE panel",
+      "short": "Rear MOLLE Panel",
+      "category": "exterior",
+      "price": 22000,
+      "models": [
+        "basecamp"
+      ],
+      "icon": "molle",
+      "description": "A rear mounting grid for compatible overlanding equipment."
+    },
+    {
+      "id": "indoorShower",
+      "name": "Indoor shower setup",
+      "short": "Indoor Shower",
+      "category": "interior",
+      "price": 15000,
+      "models": [
+        "basecamp"
+      ],
+      "icon": "shower",
+      "description": "A quick-to-set-up indoor shower area, shown as an illustrative enclosure."
+    },
+    {
+      "id": "accessDoor",
+      "name": "Exterior storage access door",
+      "short": "Storage Access Door",
+      "category": "exterior",
+      "price": 16000,
+      "models": [
+        "basecamp"
+      ],
+      "icon": "storage",
+      "description": "A lockable exterior hatch into the existing interior storage."
+    },
+    {
+      "id": "mosquito",
+      "name": "Rear-door mosquito mesh",
+      "short": "Mosquito Mesh",
+      "category": "interior",
+      "price": 6500,
+      "models": [
+        "backpack"
+      ],
+      "icon": "mesh",
+      "description": "Rear-door insect protection while allowing ventilation."
+    },
+    {
+      "id": "kitchen",
+      "name": "Modular kitchen / storage unit",
+      "short": "Kitchen & Storage",
+      "category": "interior",
+      "price": 55000,
+      "models": [
+        "backpack"
+      ],
+      "icon": "kitchen",
+      "description": "A modular cooking and storage unit, with concept layout choices."
+    }
+  ],
+  "products": [
+    {
+      "name": "Rooftop tent",
+      "description": "Elevated sleeping system for vehicle-based camping."
+    },
+    {
+      "name": "Awning",
+      "description": "Outdoor shade and shelter."
+    },
+    {
+      "name": "Shower tent",
+      "description": "Portable privacy enclosure."
+    },
+    {
+      "name": "Portable kitchen",
+      "description": "Modular outdoor cooking equipment."
+    }
+  ],
+  "assumptions": [
+    "All monetary values and 18% tax are illustrative and require approval.",
+    "Vehicle purchase, registration and delivery are excluded. Mounting/fixing is included.",
+    "Model shapes, colours, layouts and fitment are visual concepts, not certified engineering specifications."
+  ]
+}

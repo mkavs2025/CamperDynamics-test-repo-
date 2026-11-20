@@ -1,0 +1,311 @@
+{
+  "themes": {
+    "beige": {
+      "name": "Warm Beige",
+      "colors": {
+        "wood": "#bfa47d",
+        "upholstery": "#d2c2a5",
+        "walls": "#e5ddcb",
+        "ceiling": "#f0eadc",
+        "floor": "#8c7154",
+        "counter": "#d1c9b6",
+        "curtains": "#a89b80",
+        "accent": "#7e8d68",
+        "linen": "#f1e9d7",
+        "trim": "#333c35",
+        "metal": "#a8b4b0"
+      }
+    },
+    "red": {
+      "name": "Burgundy Red",
+      "colors": {
+        "wood": "#744e42",
+        "upholstery": "#81383e",
+        "walls": "#e7d9d1",
+        "ceiling": "#f1e5dd",
+        "floor": "#685148",
+        "counter": "#d5bfb4",
+        "curtains": "#9b5158",
+        "accent": "#bd7371",
+        "linen": "#e8c9b9",
+        "trim": "#35282a",
+        "metal": "#a8b4b0"
+      }
+    },
+    "black": {
+      "name": "Midnight Black",
+      "colors": {
+        "wood": "#34393c",
+        "upholstery": "#292e32",
+        "walls": "#62696b",
+        "ceiling": "#9ca4a3",
+        "floor": "#454b4a",
+        "counter": "#8a9290",
+        "curtains": "#3d464a",
+        "accent": "#ad9471",
+        "linen": "#b4b9b4",
+        "trim": "#191f23",
+        "metal": "#7d898e"
+      }
+    },
+    "green": {
+      "name": "Forest Green",
+      "colors": {
+        "wood": "#858264",
+        "upholstery": "#38594a",
+        "walls": "#d0d7c3",
+        "ceiling": "#e5e8d6",
+        "floor": "#6d7153",
+        "counter": "#bac5ae",
+        "curtains": "#637e5e",
+        "accent": "#a9ac76",
+        "linen": "#d8dfbb",
+        "trim": "#293e34",
+        "metal": "#a8b4b0"
+      }
+    }
+  },
+  "features": [
+    {
+      "id": "bed",
+      "name": "Bed platform",
+      "section": "Sleeping",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "mattress",
+      "name": "Mattress",
+      "section": "Sleeping",
+      "role": "upholstery",
+      "default": true,
+      "parent": "bed"
+    },
+    {
+      "id": "blanket",
+      "name": "Bed throw",
+      "section": "Sleeping",
+      "role": "accent",
+      "default": true,
+      "parent": "mattress"
+    },
+    {
+      "id": "bedPillows",
+      "name": "Bed pillows",
+      "section": "Sleeping",
+      "role": "linen",
+      "default": true,
+      "parent": "mattress"
+    },
+    {
+      "id": "bedsideShelves",
+      "name": "Bedside shelves",
+      "section": "Sleeping",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "bedsideLamps",
+      "name": "Bedside lamps",
+      "section": "Sleeping",
+      "role": "accent",
+      "default": true,
+      "parent": "bedsideShelves"
+    },
+    {
+      "id": "seating",
+      "name": "Bench seating",
+      "section": "Living",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "seatCushions",
+      "name": "Seat cushions",
+      "section": "Living",
+      "role": "upholstery",
+      "default": true,
+      "parent": "seating"
+    },
+    {
+      "id": "throwPillows",
+      "name": "Throw cushions",
+      "section": "Living",
+      "role": "accent",
+      "default": true,
+      "parent": "seatCushions"
+    },
+    {
+      "id": "table",
+      "name": "Dining table",
+      "section": "Living",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "tableDecor",
+      "name": "Table books & tray",
+      "section": "Living",
+      "role": "accent",
+      "default": true,
+      "parent": "table"
+    },
+    {
+      "id": "upperCupboards",
+      "name": "Overhead cupboards",
+      "section": "Storage",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "upperLighting",
+      "name": "Cupboard accent lights",
+      "section": "Storage",
+      "role": "accent",
+      "default": true,
+      "parent": "upperCupboards"
+    },
+    {
+      "id": "entranceCabinet",
+      "name": "Entrance cabinet",
+      "section": "Storage",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "galleyCabinets",
+      "name": "Kitchen cupboards",
+      "section": "Kitchen",
+      "role": "wood",
+      "default": true,
+      "kitchen": true
+    },
+    {
+      "id": "worktop",
+      "name": "Kitchen worktop",
+      "section": "Kitchen",
+      "role": "counter",
+      "default": true,
+      "parent": "galleyCabinets",
+      "kitchen": true
+    },
+    {
+      "id": "sink",
+      "name": "Sink",
+      "section": "Kitchen",
+      "role": "metal",
+      "default": true,
+      "parent": "worktop",
+      "kitchen": true
+    },
+    {
+      "id": "tap",
+      "name": "Mixer tap",
+      "section": "Kitchen",
+      "role": "metal",
+      "default": true,
+      "parent": "sink",
+      "kitchen": true
+    },
+    {
+      "id": "hob",
+      "name": "Cooking hob",
+      "section": "Kitchen",
+      "role": "trim",
+      "default": true,
+      "parent": "worktop",
+      "kitchen": true
+    },
+    {
+      "id": "choppingBoard",
+      "name": "Chopping board",
+      "section": "Kitchen",
+      "role": "wood",
+      "default": true,
+      "parent": "worktop",
+      "kitchen": true
+    },
+    {
+      "id": "curtains",
+      "name": "Window curtains",
+      "section": "Finishing touches",
+      "role": "curtains",
+      "default": true
+    },
+    {
+      "id": "windowShelves",
+      "name": "Window ledges",
+      "section": "Finishing touches",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "floorMat",
+      "name": "Entrance rug",
+      "section": "Finishing touches",
+      "role": "accent",
+      "default": true
+    },
+    {
+      "id": "coatHooks",
+      "name": "Coat hooks",
+      "section": "Finishing touches",
+      "role": "metal",
+      "default": true
+    },
+    {
+      "id": "plant",
+      "name": "Potted plant",
+      "section": "Finishing touches",
+      "role": "accent",
+      "default": true,
+      "parent": "entranceCabinet"
+    },
+    {
+      "id": "ceilingLights",
+      "name": "Ceiling lights",
+      "section": "Finishing touches",
+      "role": "metal",
+      "default": true
+    },
+    {
+      "id": "interiorDoor",
+      "name": "Entrance door finish",
+      "section": "Finishing touches",
+      "role": "walls",
+      "default": true
+    },
+    {
+      "id": "wallDecor",
+      "name": "Wall picture",
+      "section": "Finishing touches",
+      "role": "wood",
+      "default": true
+    },
+    {
+      "id": "ceilingBattens",
+      "name": "Ceiling battens",
+      "section": "Finishing touches",
+      "role": "wood",
+      "default": true
+    }
+  ],
+  "styles": {
+    "bedStyle": [
+      "double",
+      "twin"
+    ],
+    "tableShape": [
+      "rectangular",
+      "round"
+    ],
+    "curtainStyle": [
+      "open",
+      "closed"
+    ],
+    "cabinetStyle": [
+      "doors",
+      "shelves"
+    ]
+  }
+}

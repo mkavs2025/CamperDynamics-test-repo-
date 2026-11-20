@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {TRAIL,newDrive,stepDrive,recoverDrive,routeDistance,rewardRecord} from '../studio/trail.js';
+let d=newDrive();for(let i=0;i<2000&&!d.complete;i++)d=stepDrive(d,{assist:true},.1);assert.equal(d.complete,true);assert.equal(d.next,8);assert.ok(d.distance>100);assert.ok(d.elapsed>15);
+let idle=newDrive();for(let i=0;i<100;i++)idle=stepDrive(idle,{},.1);assert.equal(idle.complete,false);assert.equal(idle.next,1);
+let straight=newDrive();for(let i=0;i<100;i++)straight=stepDrive(straight,{forward:true},.1);assert.ok(straight.x<0);assert.ok(straight.next<8);assert.equal(straight.complete,false);
+const recovered=recoverDrive({...newDrive(),x:60,z:60,next:3});assert.equal(routeDistance(recovered.x,recovered.z),0);assert.equal(recovered.next,3);
+assert.equal(routeDistance(0,0),0);assert.ok(routeDistance(100,100)>50);assert.equal(stepDrive(d,{forward:true},.1).distance,d.distance);
+const r=rewardRecord('12345678-abcd',new Date('2026-01-01'));assert.equal(r.code,'DEMO-TRAIL-12345678');assert.equal(r.redeemable,false);
+assert.equal(TRAIL.length,9);console.log('Ordered trail completion, idle protection, steering direction, recovery, immutable completion and demo rewards verified.');
+const {ROAD}=await import('../studio/trail.js');assert.ok(TRAIL.at(-1).x< -150,'Finish must be far from start');for(let i=1;i<ROAD.length;i++)assert.ok(ROAD[i].x<ROAD[i-1].x,'Trail must progress forward without looping back');assert.ok(Math.max(...ROAD.map(p=>p.z))-Math.min(...ROAD.map(p=>p.z))>20,'Road must bend');for(const p of ROAD)assert.ok(routeDistance(p.x,p.z)<.01);console.log('Smooth winding road and one-way finish verified.');

@@ -1,0 +1,11 @@
+{
+  "name": "camper-dynamics-platform-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prebuild": "cd CamperDynamics && npm run prebuild",
+    "build": "cd CamperDynamics && npm run build",
+    "dev": "cd CamperDynamics && npm run dev",
+    "start": "cd CamperDynamics && npm run start"
+  }
+}

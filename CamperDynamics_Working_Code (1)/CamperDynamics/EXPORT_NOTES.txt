@@ -1,0 +1,16 @@
+CAMPER DYNAMICS - LATEST WORKING SOURCE
+
+Source commit: 2cfb2b541039f601a0ae246e05aceee92595af12
+
+Includes the latest Save tab layout, smaller price footer, larger 3D viewer,
+removed game control overlays and updated trail completion message.
+
+Extract the ZIP and open the CamperDynamics folder.
+Windows: run START_WINDOWS.bat with Node.js 24 and npm installed.
+Other systems: follow README.md under Run the full website.
+For the full website use npm; python start.py launches the legacy studio only.
+
+The ZIP includes source, assets, generated studio files, tests and setup scripts.
+Dependencies, customer data, server secrets and runtime databases are excluded.
+Hosted account authentication depends on the hosting environment; local preview
+uses browser storage. Prices and promotional messages are prototype examples.
