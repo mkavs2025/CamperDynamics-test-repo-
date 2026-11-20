@@ -28,7 +28,40 @@
 /* Consistent game world and compact, instruction-free play HUD. */
 #gameFullscreen{display:none;position:absolute;top:80px;right:18px;z-index:25;border:1px solid #91a797;border-radius:8px;padding:10px 14px;background:#162c29df;color:#eaf0de;font-size:11px}.exploring #gameFullscreen{display:block}.exploring .model-note,.exploring .viewer-hint,.exploring #photoCaption,.exploring #exploreStatus,.exploring #exploreHud>small{display:none!important}#driveInstruction:empty{display:none}#driveMeter{margin-bottom:10px}#campJump{margin-top:3px;color:#ffe09c!important}#scene:fullscreen{width:100vw!important;height:100dvh!important;inset:0!important;background:#95b7bd}#scene:fullscreen #gameFullscreen{top:18px}.exploring #scene:fullscreen #exploreHud{max-width:590px;right:auto;width:calc(100% - 36px)}#scene:fullscreen #trailReward{inset:18% 15%}.driving #driveHud{max-width:470px}#exploreHud .explore-title{margin-bottom:10px}#exploreHud .explore-views{margin-top:6px}#scene #driveHud #trailMap{top:58px;right:12px}.drive-options{margin-top:12px}@media(max-width:700px){#gameFullscreen{top:102px;right:10px;padding:8px}.driving #gameFullscreen{top:20px}.drive-top h3{font-size:19px}}
 
-.world-door{display:none;position:absolute;z-index:5;background:transparent;border:1px solid transparent;cursor:pointer;border-radius:4px}.exploring .world-door:not([hidden]){display:block}.world-door:hover,.world-door:focus-visible{border:1px solid #ffe1a0;background:#ffe1a01c;outline:none}.exploring #exploreHud{z-index:9}
+.game-day-night-btn{display:none;position:absolute;top:22px;right:18px;z-index:30;background:#14221fe8;border:1.5px solid #dfc282;border-radius:24px;padding:8px 16px;color:#f5f0e3;font-size:12px;font-weight:600;letter-spacing:0.5px;cursor:pointer;backdrop-filter:blur(12px);box-shadow:0 6px 20px rgba(0,0,0,0.4);transition:all .18s ease;align-items:center;gap:7px}
+.game-day-night-btn:hover{background:#233a35;border-color:#ffdf99;transform:scale(1.04)}
+.exploring .game-day-night-btn,.driving .game-day-night-btn{display:inline-flex}
+
+.game-tutorial-pop{display:none;position:absolute;left:24px;top:24px;z-index:45;background:#0d1c19f2;border:1.5px solid #dfc282;border-radius:14px;padding:14px 18px;color:#f3efe5;backdrop-filter:blur(16px);box-shadow:0 12px 36px rgba(0,0,0,0.55),0 0 0 1px rgba(223,194,130,0.25);max-width:360px;align-items:flex-start;gap:12px;pointer-events:auto;animation:popSlideIn .35s cubic-bezier(0.16,1,0.3,1)}
+.exploring .game-tutorial-pop,.driving .game-tutorial-pop{display:flex}
+.pop-indicator{width:10px;height:10px;border-radius:50%;background:#edd398;box-shadow:0 0 10px #edd398;animation:popPulse 1.8s infinite ease-in-out;flex-shrink:0;margin-top:4px}
+.pop-content{flex:1}
+.pop-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.pop-badge{font-size:9px;letter-spacing:1.8px;color:#edd398;font-weight:700;text-transform:uppercase}
+.pop-step{font-size:10px;letter-spacing:1px;color:#a8b8b0;font-weight:600}
+.game-tutorial-pop p{margin:0;font-size:13px;line-height:1.45;font-weight:600;color:#ffffff}
+.pop-close{background:none;border:none;color:#a8b8b0;font-size:18px;line-height:1;padding:0 0 0 4px;cursor:pointer;opacity:.7;transition:opacity .15s}
+.pop-close:hover{opacity:1;color:#ffffff}
+@keyframes popPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:0.65}}
+@keyframes popSlideIn{from{transform:translateY(-12px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.world-door{display:none;position:absolute;z-index:20;background:rgba(255,225,160,0.12);border:1.5px dashed rgba(255,225,160,0.7);cursor:pointer;border-radius:6px;transition:all .15s ease}
+.exploring .world-door:not([hidden]){display:block}
+.world-door:hover,.world-door:focus-visible{border:2px solid #ffe1a0;background:rgba(255,225,160,0.28);outline:none;box-shadow:0 0 20px rgba(255,225,160,0.6)}
+.exploring #exploreHud{z-index:9}
+.exploring #campAwning,.driving #campAwning,.exploring [data-spawn="awning"],.driving [data-spawn="awning"]{display:none!important}
+
+.game-joystick{display:none;position:absolute;right:28px;bottom:28px;z-index:45;touch-action:none;user-select:none;-webkit-user-select:none;flex-direction:column;align-items:flex-end;gap:8px}
+.exploring .game-joystick,.driving .game-joystick{display:flex}
+.joystick-toggle-bar{display:flex;justify-content:flex-end}
+.joystick-toggle-btn{background:rgba(14,25,22,0.88);border:1.5px solid rgba(223,194,130,0.6);border-radius:16px;padding:5px 12px;color:#f5f0e3;font-size:10px;font-weight:600;letter-spacing:0.5px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,0.4);backdrop-filter:blur(10px);transition:all .15s ease}
+.joystick-toggle-btn:hover{background:rgba(24,42,37,0.95);border-color:#ffdf99}
+.joystick-toggle-dot{width:6px;height:6px;border-radius:50%;background:#dfc282;box-shadow:0 0 6px #dfc282}
+.joystick-base{width:110px;height:110px;border-radius:50%;border:2.5px solid rgba(223,194,130,0.8);background:radial-gradient(circle,rgba(20,36,32,0.8) 0%,rgba(10,18,16,0.92) 100%);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,0.6),inset 0 0 18px rgba(223,194,130,0.2);position:relative;cursor:grab;touch-action:none;transition:opacity .2s,transform .2s}
+.joystick-base:active{cursor:grabbing;border-color:#ffebbd;box-shadow:0 10px 30px rgba(0,0,0,0.7),inset 0 0 24px rgba(223,194,130,0.35)}
+.joystick-base.joystick-collapsed{display:none}
+.joystick-knob{width:48px;height:48px;border-radius:50%;border:2px solid #fff8e7;background:radial-gradient(circle at 35% 35%,#fff1ce 0%,#dfc282 55%,#8f723b 100%);box-shadow:0 4px 14px rgba(0,0,0,0.5),inset 0 2px 4px rgba(255,255,255,0.9),0 0 12px rgba(223,194,130,0.5);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;will-change:transform}
+@media(max-width:700px){.game-tutorial-pop{left:12px;top:12px;max-width:calc(100% - 24px);padding:10px 14px}.game-tutorial-pop p{font-size:12px}.game-joystick{right:14px;bottom:14px}.joystick-base{width:96px;height:96px}.joystick-knob{width:42px;height:42px}}
 
 body.game-expanded{overflow:hidden}#scene.game-expanded{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:10000!important;background:#95b7bd}#scene.game-expanded #gameFullscreen{top:18px}#scene.game-expanded #exploreHud{max-width:590px;right:auto;width:calc(100% - 36px)}#scene.game-expanded #trailReward{inset:18% 15%}
 
