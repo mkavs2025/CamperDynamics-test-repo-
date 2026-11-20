@@ -18,7 +18,7 @@ export function createViewer(el,onMode){
  let gallery='front';let mode='exterior',state,catalog,roofOpen=true,night=false,auto=false,angle=-.9,elevation=.27,distance=12.0,yaw=-.1,pitch=-.12,fov=78,station='living';const stations={entry:[0,1.43,1.6],living:[-.05,1.4,.55],sleeping:[0,1.35,-.85]};const target=new T.Vector3(0,1.70,.25);
  const $=s=>document.querySelector(s);$('#loadMessage').remove();$('#hotspots').innerHTML=cabin.hotspots.map(h=>`<button class="hotspot" id="hot-${h.id}" aria-label="Explore ${h.label}">${h.label}</button>`).join('');cabin.hotspots.forEach(h=>$('#hot-'+h.id).onclick=()=>{const card=$('#featureCard');card.hidden=false;card.innerHTML=`<button aria-label="Close feature">×</button><strong>${h.label}</strong><p>${h.text}</p>`;card.querySelector('button').onclick=()=>card.hidden=true});
  function cameraUpdate(){if(driving){const c=Math.cos(drive.heading),sn=Math.sin(drive.heading);camera.position.set(drive.x+c*8,4.4,drive.z-sn*8);camera.fov=66;camera.far=300;camera.near=.08;camera.lookAt(drive.x-c*3,1.35,drive.z+sn*3);}else if(exploring){camera.position.set(walker.x,(inside?1.43:1.67)+(walker.y||0),walker.z);camera.fov=72;camera.far=300;camera.near=.035;camera.lookAt(camera.position.clone().add(new T.Vector3(Math.sin(campYaw)*Math.cos(campPitch),Math.sin(campPitch),-Math.cos(campYaw)*Math.cos(campPitch))));}else if(mode==='interior'){camera.position.set(...stations[station]);camera.fov=fov;camera.near=.035;camera.lookAt(camera.position.clone().add(new T.Vector3(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch))));}else{camera.fov=36;camera.near=.05;const r=distance*Math.cos(elevation);camera.position.set(target.x+Math.sin(angle)*r,target.y+Math.sin(elevation)*distance,target.z+Math.cos(angle)*r);camera.lookAt(target)}camera.updateProjectionMatrix();}
- function update(next,cat){state=JSON.parse(JSON.stringify(next));catalog=cat;vehicle.update(state,catalog,{roofOpen,cutaway:mode==='cutaway',night,doorOpen,storageOpen,awningOpen,driverDoorOpen});cabin.update(state,{inspectStorage:storageOpen});scene.userData.cacheKey=cabin.scene.userData.cacheKey=JSON.stringify([state,roofOpen,night,mode,doorOpen,storageOpen,awningOpen,driverDoorOpen]);scene.userData.night=cabin.scene.userData.night=night;scene.userData.cutaway=mode==='cutaway';hemi.intensity=night?.6:1.4;sun.intensity=night?.3:2;rim.intensity=night?.4:.6;key.intensity=night?.3:.5;cabin.hemi.intensity=night?.75:2.4;cabin.sun.intensity=night?.15:2.3;cabin.lights.forEach(l=>l.intensity=night?5.5:4.2);syncDayNightButton();if(exploring){scene.background=new T.Color(night?'#1c2d38':skyColor);scene.fog=new T.Fog(night?'#1c2d38':skyColor,65,210);refreshCamp();}}
+ function update(next,cat){state=JSON.parse(JSON.stringify(next));catalog=cat;vehicle.update(state,catalog,{roofOpen,cutaway:mode==='cutaway',night,doorOpen,storageOpen,awningOpen,driverDoorOpen});cabin.update(state,{inspectStorage:storageOpen});scene.userData.cacheKey=cabin.scene.userData.cacheKey=JSON.stringify([state,roofOpen,night,mode,doorOpen,storageOpen,awningOpen,driverDoorOpen]);scene.userData.night=cabin.scene.userData.night=night;scene.userData.cutaway=mode==='cutaway';hemi.intensity=night?.6:1.4;sun.intensity=night?.3:2;rim.intensity=night?.4:.6;key.intensity=night?.3:.5;cabin.hemi.intensity=night?.75:2.4;cabin.sun.intensity=night?.15:2.3;cabin.lights.forEach(l=>l.intensity=night?5:1.8);if(exploring){scene.background=new T.Color(night?'#263a46':skyColor);scene.fog=new T.Fog(night?'#263a46':skyColor,65,210);refreshCamp();}}
  function setMode(next){document.body.classList.remove('accessory-focus');target.set(0,1.70,.25);stopExplore();document.body.classList.add('live-view');$('#live360Button').classList.toggle('active',next!=='interior');$('#live360Button').setAttribute('aria-pressed',next!=='interior');mode=next;auto=false;$('#orbit').setAttribute('aria-pressed',false);document.body.classList.toggle('immersive',mode==='interior');$('#hotspots').hidden=mode!=='interior';$('#stations').hidden=mode!=='interior';$('#featureCard').hidden=true;$('#studioLabel').textContent=mode==='interior'?'INTERIOR 360° · '+station.toUpperCase():'LIVE 3D CONFIGURATOR';$('.scene-headline p').textContent=mode==='interior'?'STEP INSIDE. STAY A WHILE.':'THE OPEN ROAD IS CALLING.';$('.scene-headline h2').innerHTML=mode==='interior'?'Your little home.<br>Anywhere.':'Make room<br>for adventure.';$('#viewerHint').textContent=mode==='interior'?'DRAG TO LOOK AROUND 360° · SELECT A VIEWPOINT · SCROLL FOR FIELD OF VIEW':'DRAG TO ROTATE · SCROLL TO ZOOM · YOUR NEXT CHAPTER, IN 360°';document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===mode);b.setAttribute('aria-pressed',b.dataset.view===mode)});if(mode==='cutaway'){distance=11.5;elevation=.64}else if(mode==='exterior'){distance=12.0;elevation=.27}cameraUpdate();if(state)update(state,catalog);if(next==='interior')syncGallery('interior');else if(next==='cutaway')syncGallery('cutaway');else syncGallery('front');onMode?.(mode);}
  function focusAccessory(id){
   if(exploring)return;setMode(['indoorShower','kitchen'].includes(id)?'cutaway':'exterior');document.body.classList.add('accessory-focus');
@@ -35,122 +35,23 @@ export function createViewer(el,onMode){
  $('#fullscreen').onclick=async()=>{if(el.classList.contains('game-expanded')){el.classList.remove('game-expanded');document.body.classList.remove('game-expanded');syncFullscreen();return}try{if(document.fullscreenElement)await document.exitFullscreen();else await el.requestFullscreen()}catch{el.classList.add('game-expanded');document.body.classList.add('game-expanded');}syncFullscreen();};
  $('#gameFullscreen').onclick=()=>$('#fullscreen').click();
  document.addEventListener('fullscreenchange',syncFullscreen);
- function syncDayNightButton(){const btn=$('#gameDayNight'),icon=$('#dayNightIcon'),label=$('#dayNightLabel');if(!btn)return;btn.setAttribute('aria-pressed',night);if(icon)icon.textContent=night?'☾':'☀';if(label)label.textContent=night?'Night':'Day';}
- function toggleDayNight(){night=!night;syncDayNightButton();update(state,catalog);}
- if($('#gameDayNight'))$('#gameDayNight').onclick=toggleDayNight;
-
- let tutorialStage='move',initialWalkerPos=null;
- function setTutorialStage(stage){
-  tutorialStage=stage;const pop=$('#gameTutorialPop'),text=$('#gameTutorialText');if(!pop||!text)return;
-  const messages={move:'Use WASD or Arrow keys to move.',rear_door:'Tap the rear door to get inside the Camper',exit_door:'Tap the door to exit',jump:'Press spacebar to jump',driver_door:"Tap the drivers door to ride the camper.",drive:'Use WASD to drive to the final checkpoint to earn a reward.'};
-  if(messages[stage]){text.textContent=messages[stage];pop.style.animation='none';void pop.offsetWidth;pop.style.animation='popSlideIn .35s cubic-bezier(0.16, 1, 0.3, 1)';pop.hidden=false;}
- }
-
- function enterRearDoor(){doorOpen=true;inside=true;keys.clear();mode='interior';walker={x:0,z:1.6};campYaw=0;campPitch=-.10;cameraUpdate();update(state,catalog);refreshCamp();setTutorialStage('exit_door');}
- function exitCamper(){doorOpen=true;inside=false;keys.clear();mode='exterior';walker=spawnPoint('rear');campYaw=walker.yaw;campPitch=-.10;cameraUpdate();update(state,catalog);refreshCamp();setTutorialStage('jump');}
- function rideCamper(){driverDoorOpen=true;update(state,catalog);startDrive();setTutorialStage('drive');}
- function useDoor(driver){if(driver)rideCamper();else enterRearDoor();}
- $('#worldDriverDoor').onclick=rideCamper;$('#worldRearDoor').onclick=enterRearDoor;if($('#worldExitDoor'))$('#worldExitDoor').onclick=exitCamper;
-
+ function useDoor(driver){if(driver&&driverDoorOpen){startDrive();return}if(!driver&&doorOpen){$('#campEnter').click();return}if(driver)driverDoorOpen=true;else doorOpen=true;update(state,catalog)}$('#worldDriverDoor').onclick=()=>useDoor(true);$('#worldRearDoor').onclick=()=>useDoor(false);
  function positionDoorTargets(){
-  if(inside){
-   const b=$('#worldExitDoor');
-   if(b){b.hidden=false;b.style.cssText='position:absolute;left:50%;bottom:95px;transform:translateX(-50%);width:auto;min-width:140px;height:42px;background:#182d28f0;border:1.5px solid #dfc282;border-radius:20px;color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 18px;box-shadow:0 8px 24px #0008;z-index:25;cursor:pointer;';b.textContent='🚪 Tap to exit camper';}
-   $('#worldDriverDoor').hidden=true;$('#worldRearDoor').hidden=true;return;
-  }
-  if($('#worldExitDoor'))$('#worldExitDoor').hidden=true;
   const targets=[['#worldDriverDoor',vehicle.parts.driverDoor,driverDoorOpen,'driver'],['#worldRearDoor',vehicle.parts.door,doorOpen,'rear']];
-  for(const [id,obj,open,name] of targets){const b=$(id);b.hidden=true;if(!exploring||inside||document.body.classList.contains('driving'))continue;obj.updateWorldMatrix(true,true);const box=new T.Box3().setFromObject(obj),center=box.getCenter(new T.Vector3());if(center.distanceTo(camera.position)>7.5)continue;const view=center.clone().applyMatrix4(camera.matrixWorldInverse);if(view.z>=0)continue;
+  for(const [id,obj,open,name] of targets){const b=$(id);b.hidden=true;if(!exploring||inside||document.body.classList.contains('driving'))continue;obj.updateWorldMatrix(true,true);const box=new T.Box3().setFromObject(obj),center=box.getCenter(new T.Vector3());if(center.distanceTo(camera.position)>4)continue;const view=center.clone().applyMatrix4(camera.matrixWorldInverse);if(view.z>=0)continue;if(open&&b.dataset.closedcss){b.hidden=false;b.style.cssText=b.dataset.closedcss;b.setAttribute('aria-label','Enter through '+name+' door in scene');continue;}
    const screen=[];for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z])screen.push(new T.Vector3(x,y,z).project(camera));const xs=screen.map(p=>(p.x*.5+.5)*el.clientWidth),ys=screen.map(p=>(-.5*p.y+.5)*el.clientHeight),left=Math.min(...xs),top=Math.min(...ys),width=Math.max(...xs)-left,height=Math.max(...ys)-top;
-   if(left<0||top<0||left+width>el.clientWidth||top+height>el.clientHeight)continue;b.hidden=false;b.style.cssText=`left:${left}px;top:${top}px;width:${Math.max(34,width)}px;height:${Math.max(34,height)}px`;b.setAttribute('aria-label',name==='driver'?'Tap drivers door to ride the camper':'Tap rear door to get inside');
+   if(left<0||top<0||left+width>el.clientWidth||top+height>el.clientHeight)continue;b.hidden=false;b.style.cssText=`left:${left}px;top:${top}px;width:${Math.max(24,width)}px;height:${Math.max(24,height)}px`;if(!open)b.dataset.closedcss=b.style.cssText;b.setAttribute('aria-label',(open?'Enter through ':'Open ')+name+' door in scene');
   }
  }
  const doorRay=new T.Raycaster(),doorMouse=new T.Vector2();let clickStart=null;
- let lastCursorPos=null,cursorNorm={x:0,y:0},cursorInside=false,pointerWalk=false;
- el.addEventListener('pointerenter',e=>{cursorInside=true;lastCursorPos={x:e.clientX,y:e.clientY};});
- el.addEventListener('pointerleave',()=>{cursorInside=false;lastCursorPos=null;cursorNorm.x=cursorNorm.y=0;pointerWalk=false;});
  el.addEventListener('pointerdown',e=>{if(!e.target.closest('button'))clickStart={x:e.clientX,y:e.clientY};});
- el.addEventListener('pointerup',e=>{if(!clickStart)return;const start=clickStart;clickStart=null;if(!exploring||driving||e.target.closest('button')||Math.hypot(e.clientX-start.x,e.clientY-start.y)>14)return;
-  if(inside){exitCamper();return;}
+ el.addEventListener('pointerup',e=>{if(!clickStart)return;const start=clickStart;clickStart=null;if(!exploring||inside||driving||e.target.closest('button')||Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)return;
   const bounds=el.getBoundingClientRect();doorMouse.set((e.clientX-bounds.left)/bounds.width*2-1,-(e.clientY-bounds.top)/bounds.height*2+1);camera.updateMatrixWorld();vehicle.root.updateMatrixWorld(true);doorRay.setFromCamera(doorMouse,camera);
-  const hits=doorRay.intersectObjects([vehicle.parts.driverDoor,vehicle.parts.door],true);const hit=hits.find(h=>h.distance<7);
-  if(hit){let node=hit.object;while(node&&node!==vehicle.parts.driverDoor&&node!==vehicle.parts.door)node=node.parent;if(node===vehicle.parts.driverDoor)rideCamper();else enterRearDoor();return;}
-  else if(exploring&&!driving){
-   walker=stepWalker(walker,{forward:true,reverse:false,left:false,right:false,run:false,jump:false,yaw:campYaw},.16,{inside,roofOpen});
-   cameraUpdate();refreshCamp();
-  }
+  const hits=doorRay.intersectObjects([vehicle.parts.driverDoor,vehicle.parts.door],true);const hit=hits.find(h=>h.distance<4);if(!hit)return;let node=hit.object;while(node&&node!==vehicle.parts.driverDoor&&node!==vehicle.parts.door)node=node.parent;useDoor(node===vehicle.parts.driverDoor);
  });
- const pointers=new Map();let pinch=0;const pinchLength=()=>{const p=[...pointers.values()];return Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)};
- el.addEventListener('pointerdown',e=>{
-  if(e.target.closest('button'))return;
-  if(exploring&&!driving)pointerWalk=true;
-  el.setPointerCapture(e.pointerId);
-  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(pointers.size===2)pinch=pinchLength();
-  auto=false;
-  $('#orbit').setAttribute('aria-pressed',false);
- });
- el.addEventListener('pointermove',e=>{
-  if(exploring&&!document.body.classList.contains('driving')){
-   cursorInside=true;
-   if(lastCursorPos){
-    const dx=e.clientX-lastCursorPos.x,dy=e.clientY-lastCursorPos.y;
-    if(Math.hypot(dx,dy)<140){
-     campYaw-=dx*.004;
-     campPitch=T.MathUtils.clamp(campPitch-dy*.0035,-1.25,1.25);
-     cameraUpdate();
-    }
-   }
-   lastCursorPos={x:e.clientX,y:e.clientY};
-   const rect=el.getBoundingClientRect();
-   if(rect.width>0&&rect.height>0){
-    cursorNorm.x=((e.clientX-rect.left)/rect.width)*2-1;
-    cursorNorm.y=((e.clientY-rect.top)/rect.height)*2-1;
-   }
-   return;
-  }
-  if(!pointers.has(e.pointerId))return;
-  const p=pointers.get(e.pointerId);
-  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(pointers.size===2){
-   const n=pinchLength();zoom((pinch-n)*.02);pinch=n;
-  }else{
-   const dx=e.clientX-p.x,dy=e.clientY-p.y;
-   if(mode==='interior'){
-    yaw-=dx*.006;pitch=T.MathUtils.clamp(pitch+dy*.005,-1.35,1.35);
-   }else{
-    angle-=dx*.008;elevation=T.MathUtils.clamp(elevation+dy*.005,.05,1.2);
-   }
-   cameraUpdate();
-  }
- });
- for(const ev of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(ev,e=>{
-  pointers.delete(e.pointerId);
-  if(!pointers.size)pointerWalk=false;
- });
- el.addEventListener('wheel',e=>{
-  if(exploring&&!driving){
-   e.preventDefault();
-   walker=stepWalker(walker,{
-    forward:e.deltaY<0,
-    reverse:e.deltaY>0,
-    left:false,
-    right:false,
-    run:false,
-    jump:false,
-    yaw:campYaw
-   },Math.min(Math.abs(e.deltaY)*.0016,.08),{inside,roofOpen});
-   cameraUpdate();
-   refreshCamp();
-   return;
-  }
-  if(exploring)return;
-  e.preventDefault();
-  zoom(e.deltaY*.006);
- },{passive:false});
- el.addEventListener('keydown',e=>{if(exploring)return;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','='].includes(e.key)||e.target.closest('button'))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-.12:e.key==='ArrowRight'?.12:0,dy=e.key==='ArrowUp'?.08:e.key==='ArrowDown'?-.08:0;if(mode==='interior'){yaw+=dx;pitch=T.MathUtils.clamp(pitch+dy,-1.35,1.35)}else{angle+=dx;elevation=T.MathUtils.clamp(elevation+dy,.05,1.2)}if(e.key==='+'||e.key==='=')zoom(-.5);if(e.key==='-')zoom(.5);cameraUpdate()});
+ const pointers=new Map();let pinch=0;const pinchLength=()=>{const p=[...pointers.values()];return Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)};el.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;el.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2)pinch=pinchLength();auto=false;$('#orbit').setAttribute('aria-pressed',false)});el.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const p=pointers.get(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const n=pinchLength();zoom((pinch-n)*.02);pinch=n}else{const dx=e.clientX-p.x,dy=e.clientY-p.y;if(exploring&&!document.body.classList.contains('driving')){campYaw-=dx*.006;campPitch=T.MathUtils.clamp(campPitch-dy*.005,-1.25,1.25)}else if(mode==='interior'){yaw-=dx*.006;pitch=T.MathUtils.clamp(pitch+dy*.005,-1.35,1.35)}else{angle-=dx*.008;elevation=T.MathUtils.clamp(elevation+dy*.005,.05,1.2)}cameraUpdate()}});for(const ev of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(ev,e=>pointers.delete(e.pointerId));el.addEventListener('wheel',e=>{if(exploring)return;e.preventDefault();zoom(e.deltaY*.006)},{passive:false});el.addEventListener('keydown',e=>{if(exploring)return;if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','='].includes(e.key)||e.target.closest('button'))return;e.preventDefault();const dx=e.key==='ArrowLeft'?-.12:e.key==='ArrowRight'?.12:0,dy=e.key==='ArrowUp'?.08:e.key==='ArrowDown'?-.08:0;if(mode==='interior'){yaw+=dx;pitch=T.MathUtils.clamp(pitch+dy,-1.35,1.35)}else{angle+=dx;elevation=T.MathUtils.clamp(elevation+dy,.05,1.2)}if(e.key==='+'||e.key==='=')zoom(-.5);if(e.key==='-')zoom(.5);cameraUpdate()});
 
- function stopExplore(){cursorInside=false;lastCursorPos=null;pointerWalk=false;cursorNorm.x=cursorNorm.y=0;if($('#gameTutorialPop'))$('#gameTutorialPop').hidden=true;el.classList.remove('game-expanded');document.body.classList.remove('game-expanded');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});syncFullscreen();stopDrive();exploring=false;inside=false;keys.clear();campsite.visible=false;floor.visible=true;scene.userData.explore=false;document.body.classList.remove('exploring');$('#exploreHud').hidden=true;$('#exploreButton').setAttribute('aria-pressed',false);scene.background=new T.Color('#252b2d');scene.fog=new T.Fog('#252b2d',17,45);}
+ function stopExplore(){el.classList.remove('game-expanded');document.body.classList.remove('game-expanded');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});syncFullscreen();stopDrive();exploring=false;inside=false;keys.clear();campsite.visible=false;floor.visible=true;scene.userData.explore=false;document.body.classList.remove('exploring');$('#exploreHud').hidden=true;$('#exploreButton').setAttribute('aria-pressed',false);scene.background=new T.Color('#252b2d');scene.fog=new T.Fog('#252b2d',17,45);}
  function refreshCamp(){
   const nearDriver=!inside&&Math.hypot(walker.x+.65,walker.z-1.85)<2.5;$('#campDriverDoor').disabled=!nearDriver;$('#campDriverDoor').textContent=driverDoorOpen?'Close driver door':'Open driver door';$('#campDrive').disabled=!nearDriver||!driverDoorOpen;
 
@@ -162,21 +63,21 @@ export function createViewer(el,onMode){
   $('#campLights').textContent=night?'Daylight':'Evening lights';$('#campLights').setAttribute('aria-pressed',night);$('#studioLabel').textContent=inside?'CAMPSITE / INSIDE YOUR CAMPER':'CAMPSITE / WALK AROUND';
   $('#exploreStatus').textContent='';
  }
- function startExplore(){cursorInside=false;lastCursorPos=null;pointerWalk=false;cursorNorm.x=cursorNorm.y=0;setMode('exterior');exploring=true;inside=false;walker=spawnPoint('front');campYaw=walker.yaw;campPitch=-.12;campsite.visible=true;floor.visible=false;scene.userData.explore=true;scene.background=new T.Color(night?'#1c2d38':skyColor);scene.fog=new T.Fog(night?'#1c2d38':skyColor,65,210);document.body.classList.add('exploring');$('#exploreHud').hidden=false;$('#exploreButton').setAttribute('aria-pressed',true);$('#live360Button').setAttribute('aria-pressed',false);$('#live360Button').classList.remove('active');syncDayNightButton();initialWalkerPos={x:walker.x,z:walker.z};setTutorialStage('move');cameraUpdate();refreshCamp();el.focus({preventScroll:true});}
+ function startExplore(){setMode('exterior');exploring=true;inside=false;walker=spawnPoint('front');campYaw=walker.yaw;campPitch=-.12;campsite.visible=true;floor.visible=false;scene.userData.explore=true;scene.background=new T.Color(skyColor);scene.fog=new T.Fog(skyColor,65,210);document.body.classList.add('exploring');$('#exploreHud').hidden=false;$('#exploreButton').setAttribute('aria-pressed',true);$('#live360Button').setAttribute('aria-pressed',false);$('#live360Button').classList.remove('active');cameraUpdate();refreshCamp();el.focus({preventScroll:true});}
  $('#exploreButton').onclick=startExplore;$('#leaveExplore').onclick=()=>preset('front');
  document.querySelectorAll('[data-spawn]').forEach(b=>b.onclick=()=>{inside=false;mode='exterior';keys.clear();walker=spawnPoint(b.dataset.spawn);campYaw=walker.yaw;campPitch=-.12;cameraUpdate();update(state,catalog);});
- $('#campJump').onclick=()=>{keys.add('jump');if(tutorialStage==='jump')setTutorialStage('driver_door');el.focus({preventScroll:true})};
- $('#campDriverDoor').onclick=rideCamper;$('#campDrive').onclick=rideCamper;
- $('#campDoor').onclick=enterRearDoor;
- $('#campEnter').onclick=()=>{if(inside)exitCamper();else enterRearDoor();};
+ $('#campJump').onclick=()=>{keys.add('jump');el.focus({preventScroll:true})};
+ $('#campDriverDoor').onclick=()=>{driverDoorOpen=!driverDoorOpen;update(state,catalog)};$('#campDrive').onclick=startDrive;
+ $('#campDoor').onclick=()=>{doorOpen=!doorOpen;update(state,catalog)};
+ $('#campEnter').onclick=()=>{inside=!inside;keys.clear();mode=inside?'interior':'exterior';walker=inside?{x:0,z:1.6}:spawnPoint('rear');campYaw=inside?0:walker.yaw;campPitch=-.10;cameraUpdate();update(state,catalog);};
  $('#campRoof').onclick=()=>$('#roof').click();$('#campLights').onclick=()=>$('#night').click();$('#campStorage').onclick=()=>{storageOpen=!storageOpen;update(state,catalog)};$('#campAwning').onclick=()=>{awningOpen=!awningOpen;update(state,catalog)};
  const movementKey=e=>({ArrowUp:'w',ArrowDown:'s',ArrowLeft:'a',ArrowRight:'d'}[e.key]||e.key.toLowerCase());
- window.addEventListener('keydown',e=>{if(!exploring||e.target.closest('input,textarea,select,dialog'))return;if(e.key==='Escape'){if(document.fullscreenElement)return;if(el.classList.contains('game-expanded')){$('#fullscreen').click();return}if(driving){endDrive();return}preset('front');return}if(e.code==='Space'){e.preventDefault();if(!driving&&!e.repeat)keys.add('jump');if(tutorialStage==='jump')setTutorialStage('driver_door');return}if(e.key==='Shift'){keys.add('run');return}if(driving&&e.key.toLowerCase()==='b'){e.preventDefault();keys.add('brake');return}const k=movementKey(e);if('wasd'.includes(k)&&k.length===1){e.preventDefault();keys.add(k);if(tutorialStage==='move')setTutorialStage('rear_door');}});
+ window.addEventListener('keydown',e=>{if(!exploring||e.target.closest('input,textarea,select,dialog'))return;if(e.key==='Escape'){if(document.fullscreenElement)return;if(el.classList.contains('game-expanded')){$('#fullscreen').click();return}if(driving){endDrive();return}preset('front');return}if(e.code==='Space'){e.preventDefault();if(!driving&&!e.repeat)keys.add('jump');return}if(e.key==='Shift'){keys.add('run');return}if(driving&&e.key.toLowerCase()==='b'){e.preventDefault();keys.add('brake');return}const k=movementKey(e);if('wasd'.includes(k)&&k.length===1){e.preventDefault();keys.add(k)}});
  window.addEventListener('keyup',e=>{keys.delete(movementKey(e));if(e.key==='Shift')keys.delete('run');if(e.key.toLowerCase()==='b')keys.delete('brake')});window.addEventListener('blur',()=>keys.clear());document.addEventListener('visibilitychange',()=>keys.clear());
  document.querySelectorAll('[data-walk]').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(b.dataset.walk)});for(const ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,()=>keys.delete(b.dataset.walk));});
 
  function stopDrive(){driving=false;keys.clear();environment.trail.visible=false;vehicle.root.position.set(0,0,0);vehicle.root.rotation.y=0;vehicle.wheels.forEach(w=>w.rotation.z=0);scene.userData.vehiclePosition={x:0,z:0};document.body.classList.remove('driving');$('#driveHud').hidden=true;}
- function startDrive(){if(!driverDoorOpen)return;window.dispatchEvent(new CustomEvent('cd-game-start'));driving=true;inside=false;mode='exterior';keys.clear();drive=newDrive();assist=false;doorOpen=driverDoorOpen=false;roofOpen=false;storageOpen=false;awningOpen=false;environment.trail.visible=true;document.body.classList.add('driving');$('#driveHud').hidden=false;$('#exploreHud').hidden=true;$('#trailReward').hidden=true;$('#driveAssist').setAttribute('aria-pressed',false);setTutorialStage('drive');update(state,catalog);cameraUpdate();refreshDrive();el.focus({preventScroll:true});}
+ function startDrive(){if(!driverDoorOpen)return;window.dispatchEvent(new CustomEvent('cd-game-start'));driving=true;inside=false;mode='exterior';keys.clear();drive=newDrive();assist=false;doorOpen=driverDoorOpen=false;roofOpen=false;storageOpen=false;awningOpen=false;night=false;environment.trail.visible=true;document.body.classList.add('driving');$('#driveHud').hidden=false;$('#exploreHud').hidden=true;$('#trailReward').hidden=true;$('#driveAssist').setAttribute('aria-pressed',false);update(state,catalog);cameraUpdate();refreshDrive();el.focus({preventScroll:true});}
  function endDrive(){stopDrive();inside=false;mode='exterior';walker=spawnPoint('driver');campYaw=walker.yaw;$('#exploreHud').hidden=false;update(state,catalog);cameraUpdate();}
  function refreshDrive(){
   $('#driveSpeed').textContent=Math.round(Math.abs(drive.speed)*3.6)+' km/h';$('#driveProgress').textContent=Math.min(drive.next,8)+' / 8';$('#driveMeter').value=drive.complete?8:drive.next-1;
@@ -187,7 +88,7 @@ export function createViewer(el,onMode){
  $('#driveExit').onclick=endDrive;$('#driveRecover').onclick=()=>{drive=recoverDrive(drive);keys.clear();cameraUpdate();refreshDrive()};$('#driveAssist').onclick=()=>{assist=!assist;$('#driveAssist').setAttribute('aria-pressed',assist);$('#driveAssist').textContent=assist?'Drive assist on':'Drive assist off';};
  $('#rewardReturn').onclick=()=>{endDrive();$('#trailReward').hidden=true;};$('#rewardCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('#rewardCode').textContent);$('#rewardCopy').textContent='Copied'}catch{$('#rewardCopy').textContent='Select and copy the code above'}};
  new ResizeObserver(()=>{if(!el.clientWidth||!el.clientHeight)return;camera.aspect=el.clientWidth/el.clientHeight;camera.updateProjectionMatrix();renderer.setSize(el.clientWidth,el.clientHeight)}).observe(el);camera.aspect=el.clientWidth/el.clientHeight;renderer.setSize(el.clientWidth,el.clientHeight);cameraUpdate();let last=0,lastRender=0;
- renderer.setAnimationLoop(time=>{const dt=Math.min((time-last)/1000,.1);last=time;if(driving&&!document.hidden&&!document.querySelector('dialog[open]')){const steerLeft=keys.has('a')||(cursorInside&&cursorNorm.x<-.35);const steerRight=keys.has('d')||(cursorInside&&cursorNorm.x>.35);const gas=keys.has('w')||pointerWalk;const previousGate=drive.next;drive=stepDrive(drive,{forward:gas,reverse:keys.has('s'),left:steerLeft,right:steerRight,brake:keys.has('brake'),assist},dt);if(drive.next!==previousGate||drive.complete){window.dispatchEvent(new CustomEvent('cd-game-checkpoint',{detail:{index:drive.complete?8:drive.next-1,position:{x:drive.x,z:drive.z}}}));}vehicle.root.position.set(drive.x,Math.sin(drive.distance*3)*.007,drive.z);vehicle.root.rotation.y=drive.heading;vehicle.wheels.forEach(w=>w.rotation.z=-drive.distance/.405);scene.userData.vehiclePosition={x:drive.x,z:drive.z};cameraUpdate();refreshDrive();if(drive.complete)finishDrive();}if(exploring&&!driving&&!document.body.classList.contains('driving')&&!document.hidden&&!document.querySelector('dialog[open]')){if(cursorInside){if(Math.abs(cursorNorm.x)>.4){const edgeX=Math.sign(cursorNorm.x)*(Math.abs(cursorNorm.x)-.4)/.6;campYaw-=edgeX*1.8*dt;cameraUpdate();}if(Math.abs(cursorNorm.y)>.45){const edgeY=Math.sign(cursorNorm.y)*(Math.abs(cursorNorm.y)-.45)/.55;campPitch=T.MathUtils.clamp(campPitch-edgeY*.9*dt,-1.25,1.25);cameraUpdate();}}walker=stepWalker(walker,{forward:keys.has('w')||pointerWalk,reverse:keys.has('s'),left:keys.has('a'),right:keys.has('d'),run:keys.has('run'),jump:keys.has('jump'),yaw:campYaw},dt,{inside,roofOpen});keys.delete('jump');el.dataset.playerPeak=Math.max(Number(el.dataset.playerPeak||0),walker.y).toFixed(2);el.dataset.playerHeight=walker.y.toFixed(2);el.dataset.playerX=walker.x.toFixed(2);el.dataset.playerZ=walker.z.toFixed(2);if(tutorialStage==='move'&&initialWalkerPos&&Math.hypot(walker.x-initialWalkerPos.x,walker.z-initialWalkerPos.z)>.35){setTutorialStage('rear_door');}cameraUpdate();refreshCamp();}if(auto&&!document.hidden){if(mode==='interior')yaw+=dt*.17;else angle+=dt*.17;cameraUpdate()}if(software&&time-lastRender<50)return;lastRender=time;renderer.render(mode==='interior'?cabin.scene:scene,camera);camera.updateMatrixWorld();positionDoorTargets();if(mode==='interior'){for(const h of cabin.hotspots){const p=h.point.clone().project(camera),z=h.point.clone().applyMatrix4(camera.matrixWorldInverse).z,button=$('#hot-'+h.id);button.hidden=(h.feature&&!cabin.groups[h.feature]?.visible)||z>-.05||p.z>1||Math.abs(p.x)>.88||Math.abs(p.y)>.8;if(!button.hidden){button.style.left=(p.x*.5+.5)*100+'%';button.style.top=(-p.y*.5+.5)*100+'%';}}}});
+ renderer.setAnimationLoop(time=>{const dt=Math.min((time-last)/1000,.1);last=time;if(driving&&!document.hidden&&!document.querySelector('dialog[open]')){const previousGate=drive.next;drive=stepDrive(drive,{forward:keys.has('w'),reverse:keys.has('s'),left:keys.has('a'),right:keys.has('d'),brake:keys.has('brake'),assist},dt);if(drive.next!==previousGate||drive.complete){window.dispatchEvent(new CustomEvent('cd-game-checkpoint',{detail:{index:drive.complete?8:drive.next-1,position:{x:drive.x,z:drive.z}}}));}vehicle.root.position.set(drive.x,Math.sin(drive.distance*3)*.007,drive.z);vehicle.root.rotation.y=drive.heading;vehicle.wheels.forEach(w=>w.rotation.z=-drive.distance/.405);scene.userData.vehiclePosition={x:drive.x,z:drive.z};cameraUpdate();refreshDrive();if(drive.complete)finishDrive();}if(exploring&&!driving&&!document.body.classList.contains('driving')&&!document.hidden&&!document.querySelector('dialog[open]')){walker=stepWalker(walker,{forward:keys.has('w'),reverse:keys.has('s'),left:keys.has('a'),right:keys.has('d'),run:keys.has('run'),jump:keys.has('jump'),yaw:campYaw},dt,{inside,roofOpen});keys.delete('jump');el.dataset.playerPeak=Math.max(Number(el.dataset.playerPeak||0),walker.y).toFixed(2);el.dataset.playerHeight=walker.y.toFixed(2);el.dataset.playerX=walker.x.toFixed(2);el.dataset.playerZ=walker.z.toFixed(2);cameraUpdate();refreshCamp();}if(auto&&!document.hidden){if(mode==='interior')yaw+=dt*.17;else angle+=dt*.17;cameraUpdate()}if(software&&time-lastRender<50)return;lastRender=time;renderer.render(mode==='interior'?cabin.scene:scene,camera);camera.updateMatrixWorld();positionDoorTargets();if(mode==='interior'){for(const h of cabin.hotspots){const p=h.point.clone().project(camera),z=h.point.clone().applyMatrix4(camera.matrixWorldInverse).z,button=$('#hot-'+h.id);button.hidden=(h.feature&&!cabin.groups[h.feature]?.visible)||z>-.05||p.z>1||Math.abs(p.x)>.88||Math.abs(p.y)>.8;if(!button.hidden){button.style.left=(p.x*.5+.5)*100+'%';button.style.top=(-p.y*.5+.5)*100+'%';}}}});
  function capture(){renderer.render(mode==='interior'?cabin.scene:scene,camera);const c=document.createElement('canvas');c.width=600;c.height=Math.round(600*el.clientHeight/el.clientWidth);c.getContext('2d').drawImage(renderer.domElement,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.7);}
  function captureViews(){const old={mode,angle,elevation,distance,station,target:target.clone()};mode='exterior';angle=-.9;elevation=.24;distance=12;target.set(0,1.7,.25);cameraUpdate();update(state,catalog);const exterior=capture();mode='interior';station='entry';cameraUpdate();const interior=capture();mode=old.mode;angle=old.angle;elevation=old.elevation;distance=old.distance;station=old.station;target.copy(old.target);cameraUpdate();update(state,catalog);return [exterior,interior];}
  function deployment(open){roofOpen=open;awningOpen=open;doorOpen=open;storageOpen=false;driverDoorOpen=false;update(state,catalog);}
